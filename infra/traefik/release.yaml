@@ -4,7 +4,6 @@ metadata:
   name: traefik
 spec:
   releaseName: traefik
-  targetNamespace: traefik
   dependsOn:
     - name: metallb
   chart:
@@ -14,6 +13,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: traefik
+        namespace: flux-system
   interval: 1h0m0s
   install:
     remediation:

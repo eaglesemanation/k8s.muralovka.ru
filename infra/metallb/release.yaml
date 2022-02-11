@@ -4,7 +4,6 @@ metadata:
   name: metallb
 spec:
   releaseName: metallb
-  targetNamespace: metallb
   chart:
     spec:
       chart: metallb
