@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: metallb
-        namespace: flux-system
       version: "0.11.0"
   interval: 1h0m0s
   install:
