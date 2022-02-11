@@ -6,7 +6,7 @@ spec:
   releaseName: traefik
   targetNamespace: traefik
   dependsOn:
-    - metallb
+    - name: metallb
   chart:
     spec:
       chart: traefik
