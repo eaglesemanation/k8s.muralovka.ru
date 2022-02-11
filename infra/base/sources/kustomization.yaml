@@ -4,3 +4,4 @@ namespace: flux-system
 resources:
   - traefik.yaml
   - metallb.yaml
+  - k8s-at-home.yaml
