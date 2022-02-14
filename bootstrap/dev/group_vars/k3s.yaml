@@ -1,0 +1,3 @@
+---
+k3s_become: true
+k3s_install_hard_links: true
