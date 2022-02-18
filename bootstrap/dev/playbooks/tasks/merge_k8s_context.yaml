@@ -1,4 +1,7 @@
 ---
+- name: Ensure kubectl is configured
+  import_tasks: ensure_kubectl.yaml
+
 - name: Fetch kubecfg from master
   delegate_to: k3s_master_1
   block:

@@ -1,0 +1,25 @@
+---
+- name: Get kubectl version
+  ansible.builtin.command: kubectl version --client=true --short=true
+  register: kubectl_version
+  changed_when: false
+
+- name: Ensure that kubectl is installed
+  ansible.builtin.fail: 
+    msg: kubectl is not found
+  when: kubectl_version.rc == 127
+
+- name: Cut version number
+  ansible.builtin.set_fact:
+    kubectl_version: "{{ kubectl_version.stdout | regex_replace('Client Version: ', '') }}"
+
+- name: Ensure that kubectl is up to date
+  ansible.builtin.fail: 
+    msg: "minimum required kubectl version: {{ k3s_release_version }}"
+  when: kubectl_version is version(k3s_release_version, '<')
+
+- name: Ensure that kubeconfig exists
+  ansible.builtin.file:
+    state: file
+    path: "{{ kubecfg_path }}"
+    mode: '0600' 

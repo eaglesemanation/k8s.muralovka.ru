@@ -1,4 +1,7 @@
 ---
+- name: Ensure kubectl is configured
+  import_tasks: ensure_kubectl.yaml
+
 - name: Remove cluster
   command: "kubectl config delete-cluster {{kubecfg_cluster_name}}"
   register: delete_cluster_result
