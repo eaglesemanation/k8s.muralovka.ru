@@ -20,7 +20,7 @@
     ansible.utils.update_fact:
       updates:
         - path: kubecfg.clusters.0.cluster.server
-          value: "https://{{ ansible_default_ipv4.address }}:6443"
+          value: "https://{{ k3s_master_ip }}:6443"
         - path: kubecfg.clusters.0.name
           value: "{{ kubecfg_cluster_name }}"
 
