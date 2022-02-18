@@ -1,0 +1,9 @@
+---
+- hosts: k3s
+  roles:
+    - xanmanning.k3s
+
+- hosts: localhost
+  tasks:
+    - name: Add dev cluster context to local kubecfg
+      import_tasks: tasks/merge_k8s_context.yaml

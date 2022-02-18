@@ -1,0 +1,81 @@
+---
+- name: Fetch kubecfg from master
+  delegate_to: k3s_master_1
+  block:
+
+  - name: Read kubecfg on master
+    become: true
+    ansible.builtin.slurp:
+      path: /etc/rancher/k3s/k3s.yaml
+    register: r_kubecfg
+
+  - name: Parse kubecfg
+    ansible.builtin.set_fact:
+      kubecfg: "{{ r_kubecfg['content'] | b64decode | from_yaml }}"
+
+  - name: Patch kubecfg
+    ansible.utils.update_fact:
+      updates:
+        - path: kubecfg.clusters.0.cluster.server
+          value: "https://{{ ansible_default_ipv4.address }}:6443"
+        - path: kubecfg.clusters.0.name
+          value: "{{ kubecfg_cluster_name }}"
+
+        - path: kubecfg.users.0.name
+          value: "{{ kubecfg_user_name }}"
+
+        - path: kubecfg.contexts.0
+          value: 
+            context:
+              cluster: "{{ kubecfg_cluster_name }}"
+              user: "{{ kubecfg_user_name }}" 
+            name: "{{ kubecfg_context_name }}"
+        - path: kubecfg.current-context
+          value: "{{ kubecfg_context_name }}"
+    register: kubecfg_patched
+    changed_when: false
+
+- name: Create temp file for kubecfg
+  ansible.builtin.tempfile:
+    state: file
+    suffix: "{{ kubecfg_cluster_name }}"
+  register: kubecfg_tempfile
+  changed_when: false
+
+- name: Set correct permissions to temp file
+  ansible.builtin.file:
+    state: file
+    mode: '0600'
+    path: "{{ kubecfg_tempfile.path }}"
+
+- name: Write kubecfg
+  ansible.builtin.copy:
+    content: "{{ kubecfg_patched.kubecfg | to_nice_yaml }}"
+    dest: "{{ kubecfg_tempfile.path }}"
+  changed_when: false
+  
+- name: Merge kubecfg with existing one
+  environment:
+    KUBECONFIG: "{{ kubecfg_tempfile.path }}:{{ kubecfg_path }}"
+  ansible.builtin.command:
+    cmd: "kubectl config view --flatten"
+  changed_when: false
+  register: merged_kubecfg
+
+- name: Check kubecfg stat before overwritting
+  ansible.builtin.stat:
+    path: "{{ kubecfg_path }}"
+  register: kubecfg_stat
+
+- name: Overwrite old kubecfg
+  ansible.builtin.copy:
+    content: "{{ merged_kubecfg.stdout }}"
+    dest: "{{ kubecfg_path }}"
+  register: kubecfg_overwrite_result
+  changed_when: kubecfg_overwrite_result.checksum != kubecfg_stat.stat.checksum
+
+- name: Delete temp file
+  ansible.builtin.file:
+    state: absent
+    path: "{{ kubecfg_tempfile.path }}"
+  changed_when: false

@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Delete dev cluster context from local kubecfg
+      import_tasks: tasks/delete_k8s_context.yaml

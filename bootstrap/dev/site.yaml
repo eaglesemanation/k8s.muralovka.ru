@@ -1,4 +1,0 @@
----
-- hosts: k3s
-  roles:
-    - xanmanning.k3s
