@@ -1,4 +1,4 @@
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
   name: traefik-ingressroutes
@@ -10,6 +10,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./routes
+  path: ./infra/overlays/dev/traefik-ingressroutes/routes
   prune: true
-  validation: client
