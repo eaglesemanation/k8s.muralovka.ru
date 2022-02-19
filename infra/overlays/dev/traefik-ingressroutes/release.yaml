@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: traefik-ingressroutes
+  namespace: flux-system
+spec:
+  interval: 1m00s
+  dependsOn:
+    - name: traefik
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./routes
+  prune: true
+  validation: client
