@@ -1,8 +1,8 @@
 ---
 - import_tasks: ensure_kubectl.yaml
 
-- name: Fetch kubecfg from master
-  delegate_to: k3s_master_1
+- name: Fetch kubecfg from 1st master
+  delegate_to: "{{ groups['k3s_masters'][0] }}"
   block:
 
   - name: Read kubecfg on master
@@ -14,6 +14,10 @@
   - name: Parse kubecfg
     ansible.builtin.set_fact:
       kubecfg: "{{ r_kubecfg['content'] | b64decode | from_yaml }}"
+
+  - name: Get public master ip
+    ansible.builtin.set_fact:
+      k3s_master_ip: "{{ k3s_master_ip | default(hostvars['ansible_default_ipv4']['address']) }}"
 
   - name: Patch kubecfg
     ansible.utils.update_fact:
