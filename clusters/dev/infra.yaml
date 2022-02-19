@@ -10,4 +10,5 @@ spec:
     name: flux-system
   path: ./infra/overlays/dev
   prune: true
-  validation: client
+  wait: true
+  timeout: 10m00s
