@@ -1,6 +1,5 @@
 ---
-- name: Ensure kubectl is configured
-  import_tasks: ensure_kubectl.yaml
+- import_tasks: ensure_kubectl.yaml
 
 - name: Fetch kubecfg from master
   delegate_to: k3s_master_1
@@ -43,7 +42,7 @@
     state: file
     suffix: "{{ kubecfg_cluster_name }}"
   register: kubecfg_tempfile
-  changed_when: false
+  notify: Delete kubecfg_tempfile
 
 - name: Set correct permissions to temp file
   ansible.builtin.file:
@@ -55,14 +54,12 @@
   ansible.builtin.copy:
     content: "{{ kubecfg_patched.kubecfg | to_nice_yaml }}"
     dest: "{{ kubecfg_tempfile.path }}"
-  changed_when: false
   
 - name: Merge kubecfg with existing one
   environment:
     KUBECONFIG: "{{ kubecfg_tempfile.path }}:{{ kubecfg_path }}"
   ansible.builtin.command:
     cmd: "kubectl config view --flatten"
-  changed_when: false
   register: merged_kubecfg
 
 - name: Check kubecfg stat before overwritting
@@ -76,9 +73,3 @@
     dest: "{{ kubecfg_path }}"
   register: kubecfg_overwrite_result
   changed_when: kubecfg_overwrite_result.checksum != kubecfg_stat.stat.checksum
-
-- name: Delete temp file
-  ansible.builtin.file:
-    state: absent
-    path: "{{ kubecfg_tempfile.path }}"
-  changed_when: false

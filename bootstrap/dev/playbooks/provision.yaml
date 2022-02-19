@@ -4,6 +4,11 @@
     - xanmanning.k3s
 
 - hosts: localhost
+  handlers:
+    - import_tasks: handlers/main.yaml
   tasks:
     - name: Add dev cluster context to local kubecfg
       import_tasks: tasks/merge_k8s_context.yaml
+
+    - name: Deploy FluxCD
+      import_tasks: tasks/bootstrap_flux.yaml

@@ -1,6 +1,9 @@
 ---
 kubecfg_path: ~/.kube/config
-
 kubecfg_cluster_name: dev.k8s.muralovka.ru
 kubecfg_user_name: default@{{ kubecfg_cluster_name }}
 kubecfg_context_name: dev-muralovka
+
+flux_git_url: ssh://git@github.com/eaglesemanation/k8s.muralovka.ru.git
+flux_depl_path: clusters/dev
+flux_ssh_key_file: files/flux_deployment_key
