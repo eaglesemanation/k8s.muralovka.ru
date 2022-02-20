@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: minecraft-bedrock
+  namespace: default
+spec:
+  entryPoints:
+    - udp
+  routes:
+    - match: HostSNI(`minecraft.muralovka.ru`)
+      kind: Rule
+      services:
+        - name: minecraft-bedrock
+          port: 19132
