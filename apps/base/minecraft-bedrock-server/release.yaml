@@ -1,10 +1,10 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: minecraft-bedrock
+  name: minecraft-bedrock-server
   namespace: flux-system
 spec:
-  releaseName: minecraft-bedrock
+  releaseName: minecraft-bedrock-server
   targetNamespace: default
   chart:
     spec:
@@ -18,9 +18,9 @@ spec:
     remediation:
       retries: 3
   values:
-    nameOverride: ''
     minecraftServer:
       eula: 'TRUE'
       version: '1.18.2.03'
       onlineMode: false
-      serverName: 'Мурск Сервер'
+      serverName: 'Muralovka Server'
+      serviceType: LoadBalancer
