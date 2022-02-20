@@ -1,0 +1,70 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: coredns-external
+  namespace: flux-system
+spec:
+  releaseName: coredns-external
+  targetNamespace: coredns-external
+  chart:
+    spec:
+      chart: coredns
+      sourceRef:
+        kind: HelmRepository
+        name: coredns
+        namespace: flux-system
+      version: "1.16.7"
+  interval: 1h0m0s
+  install:
+    remediation:
+      retries: 3
+  values:
+    isClusterService: false
+    serviceType: LoadBalancer
+    service:
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: 10.50.245.50
+    servers:
+      - zones:
+          - zone: muralovka.ru
+            scheme: dns://
+        port: 53
+        plugins:
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: file
+            parameters: /etc/coredns/db.muralovka.ru
+      - zones:
+          - zone: .
+            scheme: dns://
+        port: 53
+        plugins:
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: forward
+            parameters: . tls://9.9.9.9 tls://149.112.112.112
+            configBlock: |-
+              tls_servername dns.quad9.net
+              health_check 5s
+          - name: cache
+            parameters: 30
+    zoneFiles:
+      - filename: db.muralovka.ru
+        contents: |
+          $TTL    1h
+          $ORIGIN muralovka.ru.
+          @     IN SOA  ns1.muralovka.ru. admin.muralovka.ru. (
+              2022021901
+              1h
+              15
+              1w
+              1h
+          )
+                IN NS   ns1
+          ns1   IN A    10.50.245.50
+          @     IN A    10.50.245.51
+          *     IN A    10.50.245.51

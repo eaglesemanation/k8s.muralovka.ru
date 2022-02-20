@@ -8,6 +8,7 @@ spec:
   targetNamespace: traefik
   dependsOn:
     - name: metallb
+    - name: coredns-external
   chart:
     spec:
       chart: traefik
@@ -29,3 +30,5 @@ spec:
         enabled: false
     service:
       type: LoadBalancer
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: 10.50.245.51
