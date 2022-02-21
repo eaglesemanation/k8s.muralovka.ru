@@ -19,6 +19,20 @@ spec:
     remediation:
       retries: 3
   values:
-    rbac:
-      # FIXME: Configure proper authentication
-      create: false
+    readinessProbe:
+      # FIXME: reenable when https://github.com/bitnami/charts/issues/8233 fixed
+      enabled: false
+    persistence:
+      enabled: false
+    auth:
+      # FIXME: reenable when https://github.com/kubernetes-sigs/external-dns/issues/2616 implemented
+      rbac:
+        create: false
+        allowNoneAuthentication: true
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 128m
+      limits:
+        memory: 128Mi
+        cpu: 128m
