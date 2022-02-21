@@ -18,6 +18,8 @@ spec:
     remediation:
       retries: 3
   values:
+    serviceAnnotations:
+      external-dns.alpha.kubernetes.io/hostname: minecraft.muralovka.ru
     minecraftServer:
       eula: 'TRUE'
       version: '1.18.2.03'

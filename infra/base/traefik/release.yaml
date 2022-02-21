@@ -10,4 +10,5 @@ spec:
     name: flux-system
   path: ./infra/base/traefik/helm-release
   wait: true
+  timeout: 5m00s
   prune: true
