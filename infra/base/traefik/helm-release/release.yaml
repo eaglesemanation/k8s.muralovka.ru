@@ -8,7 +8,6 @@ spec:
   targetNamespace: traefik
   dependsOn:
     - name: metallb
-    - name: external-dns
   chart:
     spec:
       chart: traefik
