@@ -8,6 +8,7 @@ spec:
   targetNamespace: traefik
   dependsOn:
     - name: metallb
+    - name: coredns
   chart:
     spec:
       chart: traefik
@@ -27,5 +28,9 @@ spec:
     ingressRoute:
       dashboard:
         enabled: false
+    providers:
+      kubernetesIngress:
+        publishedService:
+          enabled: true
     service:
       type: LoadBalancer
