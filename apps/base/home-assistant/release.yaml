@@ -18,6 +18,9 @@ spec:
     remediation:
       retries: 3
   values:
+    persistence:
+      config:
+        enabled: true
     env:
       TZ: Europe/Moscow
     hostNetwork: true
