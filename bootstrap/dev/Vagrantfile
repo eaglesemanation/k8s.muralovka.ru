@@ -12,6 +12,20 @@ NETWORK_PAD = 10
 Vagrant.configure("2") do |config|
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
+  config.vm.define "nfs_server" do |node|
+    node.vm.box = IMAGE_NAME
+    node.vm.hostname = "nfs-server"
+
+    node.vm.network :private_network,
+      :ip => "#{NETWORK_PREFIX}2",
+      :libvirt__forward_mode => 'route'
+
+    node.vm.provider :libvirt do |libvirt|
+      libvirt.cpus = 1
+      libvirt.memory = 256
+    end
+  end
+
   (1..K3S_WORKERS).each do |node_id|
     config.vm.define "k3s_worker_#{node_id}" do |node|
       node.vm.box = IMAGE_NAME
@@ -60,6 +74,7 @@ Vagrant.configure("2") do |config|
             'k3s_masters' => ["k3s_master_[1:#{K3S_MASTERS}]"],
             'k3s_workers' => ["k3s_worker_[1:#{K3S_WORKERS}]"],
             'k3s:children' => ['k3s_masters', 'k3s_workers'],
+            'nfs_servers' => ['nfs_server']
           }
         end
 

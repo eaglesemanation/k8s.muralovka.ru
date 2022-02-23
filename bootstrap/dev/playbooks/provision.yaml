@@ -3,6 +3,14 @@
   roles:
     - xanmanning.k3s
 
+- hosts: nfs_servers
+  become: true
+  roles:
+    - geerlingguy.nfs
+  pre_tasks:
+    - name: Ensure that share path exists
+      import_tasks: tasks/ensure_nfs_share.yaml
+
 - hosts: localhost
   handlers:
     - import_tasks: handlers/main.yaml
