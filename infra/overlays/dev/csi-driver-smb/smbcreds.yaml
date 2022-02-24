@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: smbcreds
+  namespace: kube-system
+data:
+  username: azhzCg==
+  password: azhzCg==

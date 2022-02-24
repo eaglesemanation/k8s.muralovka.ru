@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - bitnami.yaml
+  - csi-driver-smb.yaml
   - external-dns.yaml
   - coredns.yaml
   - traefik.yaml
