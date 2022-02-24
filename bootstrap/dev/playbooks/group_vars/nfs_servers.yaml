@@ -1,7 +1,0 @@
----
-nfs_share_path: /mnt/k8s
-nfs_user: k8s
-nfs_pass: insecurePass
-
-nfs_exports:
-  - '{{ nfs_share_path }} *(rw,sync,no_root_squash)'

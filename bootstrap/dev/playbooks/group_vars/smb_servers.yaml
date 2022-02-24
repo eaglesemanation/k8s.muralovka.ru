@@ -1,0 +1,4 @@
+---
+smb_user: k8s
+smb_pass: k8s
+smb_share_path: /srv/samba/kubedata

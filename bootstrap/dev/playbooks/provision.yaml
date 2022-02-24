@@ -3,17 +3,17 @@
   roles:
     - xanmanning.k3s
 
-- hosts: nfs_servers
+- hosts: smb_servers
   become: true
-  roles:
-    - geerlingguy.nfs
-  pre_tasks:
-    - name: Ensure that share path exists
-      import_tasks: tasks/ensure_nfs_share.yaml
+  handlers:
+    - import_tasks: handlers/smb_servers.yaml
+  tasks:
+    - name: Setup samba share
+      import_tasks: tasks/setup_samba.yaml
 
 - hosts: localhost
   handlers:
-    - import_tasks: handlers/main.yaml
+    - import_tasks: handlers/localhost.yaml
   tasks:
     - name: Add dev cluster context to local kubecfg
       import_tasks: tasks/merge_k8s_context.yaml
