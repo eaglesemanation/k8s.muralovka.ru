@@ -19,8 +19,15 @@ spec:
       retries: 3
   values:
     persistence:
+      main-config:
+        enabled: true
+        type: configMap
+        name: home-assistant-configmap
+        subPath: configuration.yaml
+        mountPath: /config/configuration.yaml
       config:
         enabled: true
+        storageClass: smb
     env:
       TZ: Europe/Moscow
     hostNetwork: true
