@@ -4,3 +4,4 @@ resources:
   - namespace.yaml
   - home-assistant-release.yaml
   - home-assistant-configmap.yaml
+  - esphome-release.yaml

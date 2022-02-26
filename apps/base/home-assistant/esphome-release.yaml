@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: esphome
+  namespace: flux-system
+spec:
+  releaseName: esphome
+  targetNamespace: home-assistant
+  chart:
+    spec:
+      chart: esphome
+      version: 8.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+  interval: 10m0s
+  install:
+    remediation:
+      retries: 3
