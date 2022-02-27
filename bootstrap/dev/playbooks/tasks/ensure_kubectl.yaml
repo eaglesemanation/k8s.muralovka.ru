@@ -1,14 +1,21 @@
 ---
 - name: Check if kubectl installed
   ansible.builtin.command: kubectl version --client=true --short=true
-  register: kubectl_version
+  register: kubectl_version_result
   changed_when: false
+  failed_when: false
 
-- name: Get kubectl version
+- name: Set kubectl facts
   ansible.builtin.set_fact:
-    kubectl_version: "{{ kubectl_version.stdout | regex_replace('Client Version: ', '') }}"
+    kubectl_state: "{{ (kubectl_version_result.rc == 0) | ternary('installed', 'absent') }}"
+    kubectl_version: "{{ kubectl_version_result.stdout | regex_replace('Client Version: ', '') }}"
 
-- name: Ensure that kubectl is up to date
+- name: Fail if kubectl is not installed
+  ansible.builtin.fail: 
+    msg: "kubectl is required for provisioning"
+  when: kubectl_state != 'installed'
+
+- name: Fail if kubectl version is lower than k3s release
   ansible.builtin.fail: 
     msg: "minimum required kubectl version: {{ k3s_release_version }}"
   when: kubectl_version is version(k3s_release_version, '<')
@@ -18,3 +25,16 @@
     state: file
     path: "{{ kubecfg_path }}"
     mode: '0600' 
+
+- name: Get list of available contexts
+  ansible.builtin.command: kubectl config get-contexts -o name
+  register: kubectl_contexts_result
+  changed_when: false
+
+- name: Search for matching context
+  ansible.builtin.set_fact:
+    _matching_contexts: "{{ kubectl_contexts_result.stdout | regex_findall('^' + kubecfg_context_name + '$', multiline=True) }}"
+
+- name: Set context state
+  ansible.builtin.set_fact:
+    kubectl_context_state: "{{ (_matching_contexts | length != 0) | ternary('installed', 'absent') }}"
