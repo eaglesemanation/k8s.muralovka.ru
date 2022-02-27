@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   releaseName: metallb
-  targetNamespace: metallb
+  targetNamespace: kube-system
   chart:
     spec:
       chart: metallb

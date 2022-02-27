@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   releaseName: traefik
-  targetNamespace: traefik
+  targetNamespace: kube-system
   dependsOn:
     - name: metallb
     - name: coredns
