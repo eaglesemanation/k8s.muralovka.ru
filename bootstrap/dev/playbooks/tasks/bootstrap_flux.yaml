@@ -1,37 +1,40 @@
 ---
 - import_tasks: ensure_flux.yaml
 
-- name: Create temp file for private key
-  ansible.builtin.tempfile:
-    state: file
-    suffix: flux_ssh
-  register: flux_ssh_key_tempfile
-  notify: Delete flux_ssh_key_tempfile
+- name: Bootstrap Flux CD
+  when: flux_state == 'absent'
+  block:
+    - name: Create temp file for private key
+      ansible.builtin.tempfile:
+        state: file
+        suffix: flux_ssh
+      register: flux_ssh_key_tempfile
+      notify: Delete flux_ssh_key_tempfile
 
-- name: Set correct permissions for temp file
-  ansible.builtin.file:
-    state: file
-    mode: '0600'
-    path: "{{ flux_ssh_key_tempfile.path }}"
+    - name: Set correct permissions for temp file
+      ansible.builtin.file:
+        state: file
+        mode: '0600'
+        path: "{{ flux_ssh_key_tempfile.path }}"
 
-- name: Write flux deployment key
-  ansible.builtin.copy:
-    src: "{{ flux_ssh_key_file }}"
-    dest: "{{ flux_ssh_key_tempfile.path }}"
-  changed_when: false
+    - name: Write Flux deployment key
+      ansible.builtin.copy:
+        src: "{{ flux_ssh_key_file }}"
+        dest: "{{ flux_ssh_key_tempfile.path }}"
+      changed_when: false
 
-- name: Bootstrap FluxCD
-  ansible.builtin.command:
-    cmd: >- 
-      flux bootstrap git
-        --url={{ flux_git_url }}
-        --path={{ flux_depl_path }}
-        --private-key-file={{ flux_ssh_key_tempfile.path }}
-        --silent
-  register: flux_result
-  failed_when: false
+    - name: Run bootstrap command
+      ansible.builtin.command:
+        cmd: >- 
+          flux bootstrap git
+            --url={{ flux_git_url }}
+            --path={{ flux_depl_path }}
+            --private-key-file={{ flux_ssh_key_tempfile.path }}
+            --silent
+      register: flux_result
+      failed_when: false
 
-- name: Show Flux errors
-  ansible.builtin.fail:
-    msg: "{{flux_result.stderr}}"
-  when: flux_result.rc != 0
+    - name: Show Flux errors
+      ansible.builtin.fail:
+        msg: "{{flux_result.stderr}}"
+      when: flux_result.rc != 0
