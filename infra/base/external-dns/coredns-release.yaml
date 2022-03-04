@@ -2,10 +2,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: coredns
-  namespace: flux-system
 spec:
   releaseName: coredns
-  targetNamespace: external-dns
+  targetNamespace: kube-system
   dependsOn:
     - name: etcd
   chart:
@@ -20,39 +19,7 @@ spec:
   install:
     remediation:
       retries: 3
-  values:
-    isClusterService: false
-    serviceType: LoadBalancer
-    service:
-      annotations:
-        metallb.universe.tf/loadBalancerIPs: 10.50.245.50
-    servers:
-      - zones:
-          - zone: muralovka.ru
-            scheme: dns://
-        port: 53
-        plugins:
-          - name: health
-            configBlock: |-
-              lameduck 5s
-          - name: ready
-          - name: etcd
-            configBlock: |-
-              path /skydns
-              endpoint http://etcd.external-dns.svc.cluster.local:2379
-      - zones:
-          - zone: .
-            scheme: dns://
-        port: 53
-        plugins:
-          - name: health
-            configBlock: |-
-              lameduck 5s
-          - name: ready
-          - name: forward
-            parameters: . tls://9.9.9.9 tls://149.112.112.112
-            configBlock: |-
-              tls_servername dns.quad9.net
-              health_check 5s
-          - name: cache
-            parameters: 30
+  valuesFrom:
+    - kind: ConfigMap
+      name: external-dns-values
+      valuesKey: coredns-values.yaml

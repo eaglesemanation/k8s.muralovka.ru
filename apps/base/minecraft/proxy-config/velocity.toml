@@ -1,0 +1,44 @@
+config-version = "1.0"
+bind = "0.0.0.0:25577"
+motd = "&#09add3Мурск Сервер"
+show-max-players = 10
+online-mode = false
+prevent-client-proxy-connections = false
+player-info-forwarding-mode = "modern"
+forwarding-secret = "NotSoSecret"
+announce-forge = false
+kick-existing-players = false
+ping-passthrough = "DISABLED"
+
+[servers]
+lobby = "lobby-minecraft.minecraft.svc.cluster.local:25565"
+survival = "survival-minecraft.minecraft.svc.cluster.local:25565"
+creative = "creative-minecraft.minecraft.svc.cluster.local:25565"
+try = [
+  "lobby"
+]
+
+[forced-hosts]
+
+[advanced]
+compression-threshold = 256
+compression-level = -1
+login-ratelimit = 3000
+connection-timeout = 5000
+read-timeout = 30000
+haproxy-protocol = false
+tcp-fast-open = false
+bungee-plugin-message-channel = true
+show-ping-requests = false
+failover-on-unexpected-server-disconnect = true
+announce-proxy-commands = true
+log-command-executions = false
+
+[messages]
+kick-prefix = "&cKicked from %s: "
+disconnect-prefix = "&cCan't connect to %s: "
+online-mode-only = "&cThis server only accepts connections from online-mode clients.\n\n&7Did you change your username? Sign out of Minecraft, sign back in, and try again."
+no-available-servers = "&cThere are no available servers."
+already-connected = "&cYou are already connected to this proxy!"
+moved-to-new-server-prefix = "&cThe server you were on kicked you: "
+generic-connection-error = "&cAn internal error occurred in your connection."

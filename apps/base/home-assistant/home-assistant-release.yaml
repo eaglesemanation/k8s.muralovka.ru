@@ -17,37 +17,6 @@ spec:
   install:
     remediation:
       retries: 3
-  values:
-    initContainers:
-      populate-config-dir:
-        image: busybox
-        command: 
-          - sh
-          - -c
-          - |-
-            for conf in groups automations scripts scenes; do
-              touch -a /config/$conf.yaml
-            done
-        volumeMounts:
-          - name: config
-            mountPath: /config
-    persistence:
-      config:
-        enabled: true
-        storageClass: smb
-      main-config:
-        enabled: true
-        type: configMap
-        name: home-assistant-configmap
-        subPath: configuration.yaml
-        mountPath: /config/configuration.yaml
-    env:
-      TZ: Europe/Moscow
-    hostNetwork: true
-    ingress:
-      main:
-        enabled: true
-        hosts:
-          - host: hassio.muralovka.ru
-            paths:
-              - path: /
+  valuesFrom:
+    - kind: ConfigMap
+      name: home-assistant-values

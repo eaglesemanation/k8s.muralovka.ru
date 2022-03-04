@@ -1,7 +1,25 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 resources:
   - namespace.yaml
   - home-assistant-release.yaml
-  - home-assistant-configmap.yaml
   - esphome-release.yaml
+
+configMapGenerator:
+  - name: home-assistant-values
+    namespace: flux-system
+    files:
+      - values.yaml=home-assistant-values.yaml
+
+  - name: home-assistant-config
+    namespace: home-assistant
+    options:
+      disableNameSuffixHash: true
+    files:
+      - home-assistant-config/configuration.yaml
+
+  - name: esphome-values
+    namespace: flux-system
+    files:
+      - values.yaml=esphome-values.yaml

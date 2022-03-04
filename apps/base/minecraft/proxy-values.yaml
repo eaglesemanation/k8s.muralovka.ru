@@ -1,0 +1,41 @@
+serviceAnnotations:
+  external-dns.alpha.kubernetes.io/hostname: minecraft.muralovka.ru
+  metallb.universe.tf/allow-shared-ip: minecraft-proxy
+initContainers:
+  - name: populate-plugins-dir
+    image: busybox
+    command: ['sh', '-c', 'mkdir -p /server/plugins/Geyser-Velocity']
+    volumeMounts:
+      - name: datadir
+        mountPath: /server
+plugins:
+  - https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/velocity/target/Geyser-Velocity.jar
+extraVolumes:
+  - volumeMounts:
+      - name: proxy-config
+        mountPath: /server/plugins/Geyser-Velocity/config.yml
+        subPath: geyser-config.yaml
+      - name: proxy-config
+        mountPath: /server/velocity.toml
+        subPath: velocity.toml
+    volumes:
+      - name: proxy-config
+        configMap:
+          name: proxy-config
+minecraftProxy:
+  type: VELOCITY
+  velocityVersion: 3.1.1
+  onlineMode: false
+  serviceType: LoadBalancer
+  extraPorts:
+    - name: bedrock
+      containerPort: 19132
+      protocol: UDP
+      service:
+        enabled: true
+        type: LoadBalancer
+        port: 19132
+        annotations:
+          metallb.universe.tf/allow-shared-ip: minecraft-proxy
+      ingress:
+        enabled: false

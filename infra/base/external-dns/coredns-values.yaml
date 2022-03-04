@@ -1,0 +1,35 @@
+isClusterService: false
+serviceType: LoadBalancer
+service:
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 10.50.245.50
+servers:
+  - zones:
+      - zone: muralovka.ru
+        scheme: dns://
+    port: 53
+    plugins:
+      - name: health
+        configBlock: |-
+          lameduck 5s
+      - name: ready
+      - name: etcd
+        configBlock: |-
+          path /skydns
+          endpoint http://etcd.kube-system.svc.cluster.local:2379
+  - zones:
+      - zone: .
+        scheme: dns://
+    port: 53
+    plugins:
+      - name: health
+        configBlock: |-
+          lameduck 5s
+      - name: ready
+      - name: forward
+        parameters: . tls://9.9.9.9 tls://149.112.112.112
+        configBlock: |-
+          tls_servername dns.quad9.net
+          health_check 5s
+      - name: cache
+        parameters: 30

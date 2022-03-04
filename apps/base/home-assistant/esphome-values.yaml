@@ -1,0 +1,11 @@
+persistence:
+  config:
+    enabled: true
+    storageClass: smb
+ingress:
+  main:
+    enabled: true
+    hosts:
+      - host: esphome.muralovka.ru
+        paths:
+          - path: /

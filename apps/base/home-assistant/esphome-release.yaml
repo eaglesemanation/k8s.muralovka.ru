@@ -17,15 +17,6 @@ spec:
   install:
     remediation:
       retries: 3
-  values:
-    persistence:
-      config:
-        enabled: true
-        storageClass: smb
-    ingress:
-      main:
-        enabled: true
-        hosts:
-          - host: esphome.muralovka.ru
-            paths:
-              - path: /
+  valuesFrom:
+    - kind: ConfigMap
+      name: esphome-values

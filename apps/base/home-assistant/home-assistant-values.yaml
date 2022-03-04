@@ -1,0 +1,33 @@
+initContainers:
+  populate-config-dir:
+    image: busybox
+    command: 
+      - sh
+      - -c
+      - |-
+        for conf in groups automations scripts scenes; do
+          touch -a /config/$conf.yaml
+        done
+    volumeMounts:
+      - name: config
+        mountPath: /config
+persistence:
+  config:
+    enabled: true
+    storageClass: smb
+  main-config:
+    enabled: true
+    type: configMap
+    name: home-assistant-config
+    subPath: configuration.yaml
+    mountPath: /config/configuration.yaml
+env:
+  TZ: Europe/Moscow
+hostNetwork: true
+ingress:
+  main:
+    enabled: true
+    hosts:
+      - host: hassio.muralovka.ru
+        paths:
+          - path: /

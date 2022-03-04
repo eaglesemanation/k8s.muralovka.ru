@@ -17,16 +17,6 @@ spec:
   install:
     remediation:
       retries: 3
-  values:
-    securityContext:
-      fsGroup: 1001
-    minecraftServer:
-      eula: TRUE
-      version: 1.18.1
-      type: PAPER
-      gamemode: adventure
-      onlineMode: false
-    persistence:
-      storageClass: smb
-      dataDir:
-        enabled: true
+  valuesFrom:
+    - kind: ConfigMap
+      name: lobby-values

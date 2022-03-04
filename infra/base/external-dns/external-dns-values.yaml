@@ -1,0 +1,4 @@
+provider: coredns
+env:
+  - name: ETCD_URLS
+    value: http://etcd.kube-system.svc.cluster.local:2379

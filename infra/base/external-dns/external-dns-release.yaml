@@ -2,10 +2,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: external-dns
-  namespace: flux-system
 spec:
   releaseName: external-dns
-  targetNamespace: external-dns
+  targetNamespace: kube-system
   dependsOn:
     - name: coredns
   chart:
@@ -20,8 +19,7 @@ spec:
   install:
     remediation:
       retries: 3
-  values:
-    provider: coredns
-    env:
-      - name: ETCD_URLS
-        value: http://etcd.external-dns.svc.cluster.local:2379
+  valuesFrom:
+    - kind: ConfigMap
+      name: external-dns-values
+      valuesKey: external-dns-values.yaml

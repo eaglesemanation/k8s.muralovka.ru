@@ -1,7 +1,26 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 resources:
   - namespace.yaml
   - proxy-release.yaml
-  - proxy-configmap.yaml
   - lobby-release.yaml
+
+configMapGenerator:
+  - name: proxy-values
+    namespace: flux-system
+    files:
+      - values.yaml=proxy-values.yaml
+
+  - name: proxy-config
+    namespace: minecraft
+    options:
+      disableNameSuffixHash: true
+    files:
+      - proxy-config/geyser-config.yaml
+      - proxy-config/velocity.toml
+
+  - name: lobby-values
+    namespace: flux-system
+    files:
+      - values.yaml=lobby-values.yaml

@@ -1,0 +1,11 @@
+securityContext:
+  fsGroup: 1001
+minecraftServer:
+  eula: TRUE
+  version: 1.18.1
+  gamemode: adventure
+  onlineMode: false
+persistence:
+  storageClass: smb
+  dataDir:
+    enabled: true
