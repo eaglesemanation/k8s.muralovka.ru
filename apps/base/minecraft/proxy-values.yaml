@@ -24,7 +24,7 @@ extraVolumes:
           name: proxy-config
 minecraftProxy:
   type: VELOCITY
-  velocityVersion: 3.1.1
+  velocityVersion: 3.1.2-SNAPSHOT
   onlineMode: false
   serviceType: LoadBalancer
   extraPorts:

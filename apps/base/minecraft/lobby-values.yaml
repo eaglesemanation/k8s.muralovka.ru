@@ -1,10 +1,21 @@
 securityContext:
   fsGroup: 1001
+extraVolumes:
+  - volumeMounts:
+      - name: lobby-config
+        mountPath: /data/server.properties
+        subPath: server.properties
+      - name: lobby-config
+        mountPath: /data/paper.yml
+        subPath: paper.yml
+    volumes:
+      - name: lobby-config
+        configMap:
+          name: lobby-config
 minecraftServer:
   eula: TRUE
-  version: 1.18.1
-  gamemode: adventure
-  onlineMode: false
+  version: 1.18.2
+  type: PAPER
 persistence:
   storageClass: smb
   dataDir:

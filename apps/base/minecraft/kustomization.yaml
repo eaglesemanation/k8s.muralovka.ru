@@ -24,3 +24,11 @@ configMapGenerator:
     namespace: flux-system
     files:
       - values.yaml=lobby-values.yaml
+
+  - name: lobby-config
+    namespace: minecraft
+    options:
+      disableNameSuffixHash: true
+    files:
+      - lobby-config/paper.yml
+      - lobby-config/server.properties
