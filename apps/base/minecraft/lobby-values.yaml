@@ -1,22 +1,72 @@
-securityContext:
-  fsGroup: 1001
-extraVolumes:
-  - volumeMounts:
-      - name: lobby-config
-        mountPath: /data/server.properties
-        subPath: server.properties
-      - name: lobby-config
-        mountPath: /data/paper.yml
-        subPath: paper.yml
-    volumes:
-      - name: lobby-config
-        configMap:
-          name: lobby-config
 minecraftServer:
   eula: TRUE
   version: 1.18.2
   type: PAPER
+
+securityContext:
+  fsGroup: 1001
+
 persistence:
   storageClass: smb
   dataDir:
     enabled: true
+
+extraVolumes:
+  - volumes:
+      - name: config-templates
+        configMap:
+          name: lobby-config-templates
+      - name: common-secrets
+        secret:
+          secretName: common-secrets
+
+initContainers:
+  - name: mkdir-plugins
+    image: busybox
+    command: ['sh', '-c', 'mkdir -p /server/plugins']
+    volumeMounts:
+      - name: datadir
+        mountPath: /server
+  - name: download-authme-plugin
+    image: mwendler/wget
+    args:
+      [
+        "--no-check-certificate",
+        "--output-document", "/server/plugins/AuthMe.jar",
+        "https://github.com/AuthMe/AuthMeReloaded/releases/download/5.6.0-beta2/AuthMe-5.6.0-beta2.jar",
+      ]
+    volumeMounts:
+      - name: datadir
+        mountPath: /server
+  - name: render-paper-config
+    image: objectiflibre/jinja-init
+    env:
+      - name: JINJA_SRC_FILE
+        value: /templates/paper.yml.j2
+      - name: JINJA_DEST_FILE
+        value: /server/paper.yml
+    volumeMounts:
+      - name: config-templates
+        mountPath: /templates/paper.yml.j2
+        subPath: paper.yml.j2
+      - name: datadir
+        mountPath: /server
+      - name: common-secrets
+        mountPath: /secrets
+        readOnly: true
+  - name: render-vanilla-config
+    image: objectiflibre/jinja-init
+    env:
+      - name: JINJA_SRC_FILE
+        value: /templates/server.properties.j2
+      - name: JINJA_DEST_FILE
+        value: /server/server.properties
+    volumeMounts:
+      - name: config-templates
+        mountPath: /templates/server.properties.j2
+        subPath: server.properties.j2
+      - name: datadir
+        mountPath: /server
+      - name: common-secrets
+        mountPath: /secrets
+        readOnly: true

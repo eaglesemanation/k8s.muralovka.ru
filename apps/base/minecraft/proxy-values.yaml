@@ -1,27 +1,10 @@
 serviceAnnotations:
   external-dns.alpha.kubernetes.io/hostname: minecraft.muralovka.ru
   metallb.universe.tf/allow-shared-ip: minecraft-proxy
-initContainers:
-  - name: populate-plugins-dir
-    image: busybox
-    command: ['sh', '-c', 'mkdir -p /server/plugins/Geyser-Velocity']
-    volumeMounts:
-      - name: datadir
-        mountPath: /server
+
 plugins:
   - https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/velocity/target/Geyser-Velocity.jar
-extraVolumes:
-  - volumeMounts:
-      - name: proxy-config
-        mountPath: /server/plugins/Geyser-Velocity/config.yml
-        subPath: geyser-config.yaml
-      - name: proxy-config
-        mountPath: /server/velocity.toml
-        subPath: velocity.toml
-    volumes:
-      - name: proxy-config
-        configMap:
-          name: proxy-config
+
 minecraftProxy:
   type: VELOCITY
   velocityVersion: 3.1.2-SNAPSHOT
@@ -39,3 +22,43 @@ minecraftProxy:
           metallb.universe.tf/allow-shared-ip: minecraft-proxy
       ingress:
         enabled: false
+
+extraVolumes:
+  - volumeMounts:
+      - name: config
+        mountPath: /server/plugins/Geyser-Velocity/config.yml
+        subPath: geyser-config.yaml
+    volumes:
+      - name: config
+        configMap:
+          name: proxy-config
+      - name: config-templates
+        configMap:
+          name: proxy-config-templates
+      - name: common-secrets
+        secret:
+          secretName: common-secrets
+
+initContainers:
+  - name: mkdir-plugins
+    image: busybox
+    command: ['sh', '-c', 'mkdir -p /server/plugins/Geyser-Velocity']
+    volumeMounts:
+      - name: datadir
+        mountPath: /server
+  - name: render-velocity-config
+    image: objectiflibre/jinja-init
+    env:
+      - name: JINJA_SRC_FILE
+        value: /templates/velocity.toml.j2
+      - name: JINJA_DEST_FILE
+        value: /server/velocity.toml
+    volumeMounts:
+      - name: config-templates
+        mountPath: /templates/velocity.toml.j2
+        subPath: velocity.toml.j2
+      - name: datadir
+        mountPath: /server
+      - name: common-secrets
+        mountPath: /secrets
+        readOnly: true

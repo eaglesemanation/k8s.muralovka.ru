@@ -5,15 +5,13 @@ show-max-players = 10
 online-mode = false
 prevent-client-proxy-connections = false
 player-info-forwarding-mode = "modern"
-forwarding-secret = "NotSoSecret"
+forwarding-secret = "{{ velocity_secret }}"
 announce-forge = false
 kick-existing-players = false
 ping-passthrough = "DISABLED"
 
 [servers]
 lobby = "lobby-minecraft.minecraft.svc.cluster.local:25565"
-survival = "survival-minecraft.minecraft.svc.cluster.local:25565"
-creative = "creative-minecraft.minecraft.svc.cluster.local:25565"
 try = [
   "lobby"
 ]
@@ -42,3 +40,5 @@ no-available-servers = "&cThere are no available servers."
 already-connected = "&cYou are already connected to this proxy!"
 moved-to-new-server-prefix = "&cThe server you were on kicked you: "
 generic-connection-error = "&cAn internal error occurred in your connection."
+
+# vim: ft=toml

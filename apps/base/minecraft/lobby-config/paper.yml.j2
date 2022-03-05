@@ -48,7 +48,7 @@ settings:
   velocity-support:
     enabled: true
     online-mode: false
-    secret: "NotSoSecret"
+    secret: "{{ velocity_secret }}"
   console-has-all-permissions: false
   player-auto-save-rate: -1
   max-player-auto-save-per-tick: -1
@@ -363,3 +363,5 @@ world-settings:
       behavior:
         villager:
           validatenearbypoi: -1
+
+# vim: ft=yaml

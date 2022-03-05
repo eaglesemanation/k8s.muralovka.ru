@@ -14,9 +14,6 @@ spec:
         kind: HelmRepository
         name: minecraft-server-charts
   interval: 10m0s
-  install:
-    remediation:
-      retries: 3
   valuesFrom:
     - kind: ConfigMap
       name: proxy-values
