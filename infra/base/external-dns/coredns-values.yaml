@@ -16,7 +16,7 @@ servers:
       - name: etcd
         configBlock: |-
           path /skydns
-          endpoint http://etcd.kube-system.svc.cluster.local:2379
+          endpoint http://external-dns-etcd.kube-system.svc.cluster.local:2379
   - zones:
       - zone: .
         scheme: dns://

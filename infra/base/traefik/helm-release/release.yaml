@@ -8,7 +8,6 @@ spec:
   targetNamespace: kube-system
   dependsOn:
     - name: metallb
-    - name: coredns
   chart:
     spec:
       chart: traefik
@@ -18,7 +17,6 @@ spec:
         name: traefik
         namespace: flux-system
   interval: 1h0m0s
-  install:
-    remediation:
-      retries: 3
-  values:
+  valuesFrom:
+    - kind: ConfigMap
+      name: traefik-values

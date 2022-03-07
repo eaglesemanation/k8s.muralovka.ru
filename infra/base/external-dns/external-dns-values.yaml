@@ -1,3 +1,4 @@
+policy: sync
 provider: coredns
 env:
   - name: ETCD_URLS

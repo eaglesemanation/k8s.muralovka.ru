@@ -3,7 +3,7 @@ kind: HelmRelease
 metadata:
   name: coredns
 spec:
-  releaseName: coredns
+  releaseName: external-dns
   targetNamespace: kube-system
   dependsOn:
     - name: etcd
