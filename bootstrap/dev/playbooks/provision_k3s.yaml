@@ -3,14 +3,6 @@
   roles:
     - xanmanning.k3s
 
-- hosts: smb_servers
-  become: true
-  handlers:
-    - import_tasks: handlers/smb_servers.yaml
-  tasks:
-    - name: Setup samba share
-      import_tasks: tasks/setup_samba.yaml
-
 - hosts: localhost
   handlers:
     - import_tasks: handlers/localhost.yaml

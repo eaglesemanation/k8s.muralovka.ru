@@ -9,12 +9,20 @@ K3S_WORKERS = 2
 NETWORK_PREFIX = '10.50.245.'
 NETWORK_PAD = 10
 
+SMB_PATH = '/srv/samba/kubedata'
+SMB_USER = 'k8s'
+SMB_PASS = 'k8s'
+
 Vagrant.configure("2") do |config|
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
-  config.vm.define "smb_server" do |node|
+  config.vm.define 'smb_server' do |node|
     node.vm.box = IMAGE_NAME
-    node.vm.hostname = "smb-server"
+    node.vm.hostname = 'smb-server'
+
+    node.vm.synced_folder 'smb-share', '/mnt/vagrant', create: true, nfs_version: 4
+    node.bindfs.bind_folder '/mnt/vagrant', SMB_PATH, 
+      after: :provision, user: SMB_USER, group: SMB_USER
 
     node.vm.network :private_network,
       :ip => "#{NETWORK_PREFIX}2",
@@ -23,6 +31,19 @@ Vagrant.configure("2") do |config|
     node.vm.provider :libvirt do |libvirt|
       libvirt.cpus = 1
       libvirt.memory = 256
+    end
+
+    node.vm.provision :ansible do |ansible|
+      ansible.playbook = 'playbooks/provision_smb.yaml'
+      ansible.extra_vars = {
+        'smb_share_path': SMB_PATH,
+        # TODO: extract to ansible vault file
+        'smb_user': SMB_USER,
+        'smb_pass': SMB_PASS
+      }
+      ansible.groups = {
+        'smb_servers' => ['smb_server']
+      }
     end
   end
 
@@ -61,7 +82,7 @@ Vagrant.configure("2") do |config|
       # Make Vagrant think it provisions only 1 node
       if node_id == K3S_MASTERS then
         node.vm.provision :ansible do |ansible|
-          ansible.playbook = 'playbooks/provision.yaml'
+          ansible.playbook = 'playbooks/provision_k3s.yaml'
           # Actually provision all nodes
           ansible.limit = 'all,localhost'
           ansible.galaxy_command = 'ansible-galaxy install -r %{role_file}'
@@ -74,7 +95,6 @@ Vagrant.configure("2") do |config|
             'k3s_masters' => ["k3s_master_[1:#{K3S_MASTERS}]"],
             'k3s_workers' => ["k3s_worker_[1:#{K3S_WORKERS}]"],
             'k3s:children' => ['k3s_masters', 'k3s_workers'],
-            'smb_servers' => ['smb_server']
           }
         end
 
