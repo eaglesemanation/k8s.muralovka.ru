@@ -2,4 +2,4 @@ policy: sync
 provider: coredns
 env:
   - name: ETCD_URLS
-    value: http://etcd.kube-system.svc.cluster.local:2379
+    value: http://external-dns-etcd.kube-system.svc.cluster.local:2379
