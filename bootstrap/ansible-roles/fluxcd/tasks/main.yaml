@@ -1,0 +1,11 @@
+---
+- import_tasks: fluxcli_facts.yaml
+
+- name: Fail if Flux CLI is not installed
+  ansible.builtin.fail: 
+    msg: "Flux CLI is required to install FluxCD"
+  when: _fluxcli_state != 'installed'
+
+- import_tasks: fluxcd_facts.yaml
+
+- include_tasks: "fluxcd_{{ fluxcd_state }}.yaml"

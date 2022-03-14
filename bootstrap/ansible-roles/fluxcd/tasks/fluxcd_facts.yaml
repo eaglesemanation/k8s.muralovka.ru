@@ -1,0 +1,10 @@
+---
+- name: Check Flux installation status
+  ansible.builtin.command: flux version
+  register: fluxcd_version
+  changed_when: false
+  failed_when: false
+
+- name: Set Flux current state
+  ansible.builtin.set_fact:
+    _fluxcd_state: "{{ (fluxcd_version.rc | default(1) == 0) | ternary('installed', 'absent') }}"

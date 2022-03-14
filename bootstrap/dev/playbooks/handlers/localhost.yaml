@@ -1,10 +1,4 @@
 ---
-- name: Delete flux_ssh_key_tempfile
-  ansible.builtin.file:
-    state: absent
-    path: "{{ flux_ssh_key_tempfile.path }}"
-  changed_when: false
-
 - name: Delete kubecfg_tempfile
   ansible.builtin.file:
     state: absent

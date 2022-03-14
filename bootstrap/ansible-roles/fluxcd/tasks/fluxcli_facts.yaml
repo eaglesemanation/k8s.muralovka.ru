@@ -1,0 +1,11 @@
+---
+- name: Ensure that Flux CLI is installed
+  ansible.builtin.command: flux version --client
+  register: fluxcli_version
+  changed_when: false
+  failed_when: false
+
+- name: Set Flux CLI facts
+  ansible.builtin.set_fact:
+    _fluxcli_state: "{{ (fluxcli_version.rc == 0) | ternary('installed', 'absent') }}"
+    _fluxcli_version: "{{ fluxcli_version.stdout | regex_replace('flux: ', '') }}"

@@ -1,0 +1,5 @@
+---
+fluxcd_state: 'installed'
+fluxcd_git_url: "{{ undef(hint='You must specify git repository url') }}"
+fluxcd_deployment_path: "{{ undef(hint='You must specify path in repository for cluster sync') }}"
+fluxcd_ssh_key_file: "{{ undef(hint='You must specify path to ssh private key with write access to git repository') }}"

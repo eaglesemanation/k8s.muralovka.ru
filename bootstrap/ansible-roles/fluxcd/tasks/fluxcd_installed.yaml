@@ -1,0 +1,32 @@
+---
+- name: Exit early if FluxCD is already installed
+  ansible.builtin.meta: end_host
+  when: _fluxcd_state == 'installed'
+
+- name: Create temp file for private key
+  ansible.builtin.tempfile:
+    state: file
+    suffix: fluxcd_ssh
+  register: fluxcd_ssh_key_tempfile
+  notify: Delete fluxcd_ssh_key_tempfile
+
+- name: Set correct permissions for temp file
+  ansible.builtin.file:
+    state: file
+    mode: '0600'
+    path: "{{ fluxcd_ssh_key_tempfile.path }}"
+
+# Copy is needed in case ssh key file is in an ansible vault
+- name: Write Flux deployment key
+  ansible.builtin.copy:
+    src: "{{ fluxcd_ssh_key_file }}"
+    dest: "{{ fluxcd_ssh_key_tempfile.path }}"
+
+- name: Run bootstrap command
+  ansible.builtin.command:
+    cmd: >- 
+      flux bootstrap git
+        --url={{ fluxcd_git_url }}
+        --path={{ fluxcd_deployment_path }}
+        --private-key-file={{ fluxcd_ssh_key_tempfile.path }}
+        --silent

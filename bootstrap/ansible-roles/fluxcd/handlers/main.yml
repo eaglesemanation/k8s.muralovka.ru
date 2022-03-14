@@ -1,0 +1,6 @@
+---
+- name: Delete fluxcd_ssh_key_tempfile
+  ansible.builtin.file:
+    state: absent
+    path: "{{ fluxcd_ssh_key_tempfile.path }}"
+  changed_when: false
