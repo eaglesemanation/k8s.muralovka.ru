@@ -16,7 +16,13 @@ spec:
         kind: HelmRepository
         name: traefik
         namespace: flux-system
-  interval: 1h0m0s
+  interval: 10m0s
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 3
   valuesFrom:
     - kind: ConfigMap
       name: traefik-values
