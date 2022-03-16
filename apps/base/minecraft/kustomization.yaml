@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - postgres-release.yaml
   - proxy-release.yaml
   - lobby-release.yaml
 
@@ -46,3 +47,9 @@ secretGenerator:
       disableNameSuffixHash: true
     literals:
       - velocity_secret=NotSoSecure
+  
+  - name: minecraft-postgres-creds
+    namespace: flux-system
+    literals:
+      - username=minecraft
+      - password=minecraft

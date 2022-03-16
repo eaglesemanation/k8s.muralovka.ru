@@ -38,6 +38,28 @@ initContainers:
     volumeMounts:
       - name: datadir
         mountPath: /server
+  - name: download-advanced-portals
+    image: mwendler/wget
+    args:
+      [
+        "--no-check-certificate",
+        "--output-document", "/server/plugins/advanced-portals.jar",
+        "https://dev.bukkit.org/projects/advanced-portals/files/latest",
+      ]
+    volumeMounts:
+      - name: datadir
+        mountPath: /server
+  - name: download-luckperms
+    image: mwendler/wget
+    args:
+      [
+        "--no-check-certificate",
+        "--output-document", "/server/plugins/LuckPerms.jar",
+        "https://ci.lucko.me/job/LuckPerms/1417/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.4.9.jar",
+      ]
+    volumeMounts:
+      - name: datadir
+        mountPath: /server
   - name: render-paper-config
     image: objectiflibre/jinja-init
     env:

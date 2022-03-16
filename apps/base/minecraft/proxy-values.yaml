@@ -4,6 +4,8 @@ serviceAnnotations:
 
 plugins:
   - https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/velocity/target/Geyser-Velocity.jar
+  - https://dev.bukkit.org/projects/advanced-portals/files/latest
+  - https://ci.lucko.me/job/LuckPerms/1417/artifact/velocity/build/libs/LuckPerms-Velocity-5.4.9.jar
 
 minecraftProxy:
   type: VELOCITY
