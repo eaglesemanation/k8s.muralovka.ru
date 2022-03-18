@@ -2,6 +2,16 @@ minecraftServer:
   eula: TRUE
   version: 1.18.2
   type: PAPER
+  spigetResources:
+    - 34315 # https://www.spigotmc.org/resources/vault.34315/
+    - 28140 # https://www.spigotmc.org/resources/luckperms.28140/
+    # FIXME: Enable when Spigot link is fixed
+    #- 6269  # https://www.spigotmc.org/resources/authmereloaded.6269/
+    - 1997  # https://www.spigotmc.org/resources/protocollib.1997/
+    - 19254 # https://www.spigotmc.org/resources/viaversion.19254/
+    - 27448 # https://www.spigotmc.org/resources/viabackwards.27448/
+    # FIXME: Enable when Spigot link is fixed
+    #- 14356 # https://www.spigotmc.org/resources/advanced-portals.14356/
 
 securityContext:
   fsGroup: 1001
@@ -27,6 +37,7 @@ initContainers:
     volumeMounts:
       - name: datadir
         mountPath: /server
+  # FIXME: Remove when Spigot link is fixed
   - name: download-authme-plugin
     image: mwendler/wget
     args:
@@ -38,24 +49,14 @@ initContainers:
     volumeMounts:
       - name: datadir
         mountPath: /server
-  - name: download-advanced-portals
+  # FIXME: Remove when Spigot link is fixed
+  - name: download-advanced-portals-plugin
     image: mwendler/wget
     args:
       [
         "--no-check-certificate",
-        "--output-document", "/server/plugins/advanced-portals.jar",
+        "--output-document", "/server/plugins/Advanced-Portals.jar",
         "https://dev.bukkit.org/projects/advanced-portals/files/latest",
-      ]
-    volumeMounts:
-      - name: datadir
-        mountPath: /server
-  - name: download-luckperms
-    image: mwendler/wget
-    args:
-      [
-        "--no-check-certificate",
-        "--output-document", "/server/plugins/LuckPerms.jar",
-        "https://ci.lucko.me/job/LuckPerms/1417/artifact/bukkit/loader/build/libs/LuckPerms-Bukkit-5.4.9.jar",
       ]
     volumeMounts:
       - name: datadir
