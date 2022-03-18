@@ -29,14 +29,24 @@ extraVolumes:
       - name: common-secrets
         secret:
           secretName: common-secrets
+      - name: plugin-config-templates
+        configMap:
+          name: plugin-config-templates
 
 initContainers:
   - name: mkdir-plugins
     image: busybox
-    command: ['sh', '-c', 'mkdir -p /server/plugins']
+    command:
+      - sh
+      - -c
+      - |-
+        for pluginName in LuckPerms AuthMe; do
+          mkdir -p /server/plugins/$pluginName
+        done
     volumeMounts:
       - name: datadir
         mountPath: /server
+
   # FIXME: Remove when Spigot link is fixed
   - name: download-authme-plugin
     image: mwendler/wget
@@ -49,6 +59,7 @@ initContainers:
     volumeMounts:
       - name: datadir
         mountPath: /server
+
   # FIXME: Remove when Spigot link is fixed
   - name: download-advanced-portals-plugin
     image: mwendler/wget
@@ -61,6 +72,7 @@ initContainers:
     volumeMounts:
       - name: datadir
         mountPath: /server
+
   - name: render-paper-config
     image: objectiflibre/jinja-init
     env:
@@ -77,6 +89,7 @@ initContainers:
       - name: common-secrets
         mountPath: /secrets
         readOnly: true
+
   - name: render-vanilla-config
     image: objectiflibre/jinja-init
     env:
@@ -88,6 +101,40 @@ initContainers:
       - name: config-templates
         mountPath: /templates/server.properties.j2
         subPath: server.properties.j2
+      - name: datadir
+        mountPath: /server
+      - name: common-secrets
+        mountPath: /secrets
+        readOnly: true
+
+  - name: render-luckperms-config
+    image: objectiflibre/jinja-init
+    env:
+      - name: JINJA_SRC_FILE
+        value: /templates/luckperms.yml.j2
+      - name: JINJA_DEST_FILE
+        value: /server/plugins/LuckPerms/config.yml
+    volumeMounts:
+      - name: plugin-config-templates
+        mountPath: /templates/luckperms.yml.j2
+        subPath: luckperms.yml.j2
+      - name: datadir
+        mountPath: /server
+      - name: common-secrets
+        mountPath: /secrets
+        readOnly: true
+
+  - name: render-authme-config
+    image: objectiflibre/jinja-init
+    env:
+      - name: JINJA_SRC_FILE
+        value: /templates/authme.yml.j2
+      - name: JINJA_DEST_FILE
+        value: /server/plugins/AuthMe/config.yml
+    volumeMounts:
+      - name: plugin-config-templates
+        mountPath: /templates/authme.yml.j2
+        subPath: authme.yml.j2
       - name: datadir
         mountPath: /server
       - name: common-secrets

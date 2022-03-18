@@ -6,6 +6,7 @@ resources:
   - postgres-release.yaml
   - proxy-release.yaml
   - lobby-release.yaml
+  - plugins-common-config
 
 configMapGenerator:
   - name: proxy-values
@@ -47,6 +48,8 @@ secretGenerator:
       disableNameSuffixHash: true
     literals:
       - velocity_secret=NotSoSecure
+      - postgres_username=minecraft
+      - postgres_password=minecraft
   
   - name: minecraft-postgres-creds
     namespace: flux-system

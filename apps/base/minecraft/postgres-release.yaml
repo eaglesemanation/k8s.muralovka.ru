@@ -4,7 +4,7 @@ metadata:
   name: minecraft-postgres
   namespace: flux-system
 spec:
-  releaseName: postgres
+  releaseName: db
   targetNamespace: minecraft
   chart:
     spec:
@@ -20,6 +20,9 @@ spec:
   upgrade:
     remediation:
       retries: 3
+  values:
+    auth:
+      database: minecraft
   valuesFrom:
     - kind: Secret
       name: minecraft-postgres-creds
