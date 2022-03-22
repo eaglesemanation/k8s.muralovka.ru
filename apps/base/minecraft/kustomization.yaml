@@ -50,6 +50,7 @@ secretGenerator:
       - velocity_secret=NotSoSecure
       - postgres_username=minecraft
       - postgres_password=minecraft
+      - rcon_password=NotSoSecure
   
   - name: minecraft-postgres-creds
     namespace: flux-system

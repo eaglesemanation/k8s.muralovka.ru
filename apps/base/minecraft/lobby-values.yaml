@@ -2,6 +2,7 @@ minecraftServer:
   eula: TRUE
   version: 1.18.2
   type: PAPER
+  overrideServerProperties: true
   spigetResources:
     - 34315 # https://www.spigotmc.org/resources/vault.34315/
     - 28140 # https://www.spigotmc.org/resources/luckperms.28140/
@@ -12,6 +13,10 @@ minecraftServer:
     - 27448 # https://www.spigotmc.org/resources/viabackwards.27448/
     # FIXME: Enable when Spigot link is fixed
     #- 14356 # https://www.spigotmc.org/resources/advanced-portals.14356/
+  rcon:
+    enabled: true
+    existingSecret: common-secrets
+    secretKey: rcon_password
 
 securityContext:
   fsGroup: 1001
