@@ -39,7 +39,6 @@ configMapGenerator:
       disableNameSuffixHash: true
     files:
       - lobby-config/paper.yml.j2
-      - lobby-config/server.properties.j2
 
 secretGenerator:
   - name: common-secrets

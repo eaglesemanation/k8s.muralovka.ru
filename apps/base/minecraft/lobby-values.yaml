@@ -3,6 +3,8 @@ minecraftServer:
   version: 1.18.2
   type: PAPER
   overrideServerProperties: true
+  onlineMode: false
+  gamemode: adventure
   spigetResources:
     - 34315 # https://www.spigotmc.org/resources/vault.34315/
     - 28140 # https://www.spigotmc.org/resources/luckperms.28140/
@@ -106,23 +108,6 @@ initContainers:
       - name: config-templates
         mountPath: /templates/paper.yml.j2
         subPath: paper.yml.j2
-      - name: datadir
-        mountPath: /server
-      - name: common-secrets
-        mountPath: /secrets
-        readOnly: true
-
-  - name: render-vanilla-config
-    image: objectiflibre/jinja-init
-    env:
-      - name: JINJA_SRC_FILE
-        value: /templates/server.properties.j2
-      - name: JINJA_DEST_FILE
-        value: /server/server.properties
-    volumeMounts:
-      - name: config-templates
-        mountPath: /templates/server.properties.j2
-        subPath: server.properties.j2
       - name: datadir
         mountPath: /server
       - name: common-secrets
