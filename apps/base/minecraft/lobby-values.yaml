@@ -15,6 +15,7 @@ minecraftServer:
     - 27448 # https://www.spigotmc.org/resources/viabackwards.27448/
     # FIXME: Enable when Spigot link is fixed
     #- 14356 # https://www.spigotmc.org/resources/advanced-portals.14356/
+    - 2124  # https://www.spigotmc.org/resources/skinsrestorer.2124/
   rcon:
     enabled: true
     existingSecret: common-secrets
@@ -29,6 +30,7 @@ minecraftServer:
     -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem
     -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs
     -Daikars.new.flags=true
+  memory: 1024M
 
 resources:
   requests:

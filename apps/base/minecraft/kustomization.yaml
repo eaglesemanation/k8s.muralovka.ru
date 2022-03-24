@@ -27,6 +27,7 @@ configMapGenerator:
       disableNameSuffixHash: true
     files:
       - proxy-config/geyser-config.yaml
+      - proxy-config/skinrestorer.yaml
 
   - name: lobby-values
     namespace: flux-system

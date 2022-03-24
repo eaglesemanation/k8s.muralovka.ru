@@ -8,6 +8,7 @@ minecraftProxy:
     - https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/velocity/target/Geyser-Velocity.jar
     - https://dev.bukkit.org/projects/advanced-portals/files/latest
     - https://ci.lucko.me/job/LuckPerms/1417/artifact/velocity/build/libs/LuckPerms-Velocity-5.4.9.jar
+    - https://github.com/SkinsRestorer/SkinsRestorerX/releases/download/14.1.13/SkinsRestorer.jar
   velocityVersion: 3.1.2-SNAPSHOT
   onlineMode: false
   serviceType: LoadBalancer
@@ -29,6 +30,9 @@ extraVolumes:
       - name: config
         mountPath: /server/plugins/Geyser-Velocity/config.yml
         subPath: geyser-config.yaml
+      - name: config
+        mountPath: /server/plugins/skinsrestorer/config.yml
+        subPath: skinrestorer.yaml
     volumes:
       - name: config
         configMap:
@@ -43,10 +47,17 @@ extraVolumes:
 initContainers:
   - name: mkdir-plugins
     image: busybox
-    command: ['sh', '-c', 'mkdir -p /server/plugins/Geyser-Velocity']
+    command: 
+      - sh
+      - -c
+      - |-
+        for pluginName in Geyser-Velocity skinrestorer; do
+          mkdir -p /server/plugins/$pluginName
+        done
     volumeMounts:
       - name: datadir
         mountPath: /server
+
   - name: render-velocity-config
     image: objectiflibre/jinja-init
     env:
