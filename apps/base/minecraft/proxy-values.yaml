@@ -2,6 +2,11 @@ serviceAnnotations:
   external-dns.alpha.kubernetes.io/hostname: minecraft.muralovka.ru
   metallb.universe.tf/allow-shared-ip: minecraft-proxy
 
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
 minecraftProxy:
   type: VELOCITY
   plugins:
@@ -12,6 +17,7 @@ minecraftProxy:
   velocityVersion: 3.1.2-SNAPSHOT
   onlineMode: false
   serviceType: LoadBalancer
+  externalTrafficPolicy: Local
   extraPorts:
     - name: bedrock
       containerPort: 19132
@@ -19,6 +25,7 @@ minecraftProxy:
       service:
         enabled: true
         type: LoadBalancer
+        externalTrafficPolicy: Local
         port: 19132
         annotations:
           metallb.universe.tf/allow-shared-ip: minecraft-proxy
@@ -31,15 +38,12 @@ extraVolumes:
         mountPath: /server/plugins/Geyser-Velocity/config.yml
         subPath: geyser-config.yaml
       - name: config
-        mountPath: /server/plugins/skinsrestorer/config.yml
+        mountPath: /server/plugins/skinrestorer/config.yml
         subPath: skinrestorer.yaml
     volumes:
       - name: config
         configMap:
           name: proxy-config
-      - name: config-templates
-        configMap:
-          name: proxy-config-templates
       - name: common-secrets
         secret:
           secretName: common-secrets
@@ -54,23 +58,23 @@ initContainers:
         for pluginName in Geyser-Velocity skinrestorer; do
           mkdir -p /server/plugins/$pluginName
         done
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
       - name: datadir
         mountPath: /server
 
-  - name: render-velocity-config
-    image: objectiflibre/jinja-init
-    env:
-      - name: JINJA_SRC_FILE
-        value: /templates/velocity.toml.j2
-      - name: JINJA_DEST_FILE
-        value: /server/velocity.toml
+  # FIXME: Mount velocity config to be mountable instead of copying it
+  - name: cp-velocity-conf
+    image: busybox
+    command: ['sh', '-c', 'cp /conf/velocity.toml /server/velocity.toml']
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
-      - name: config-templates
-        mountPath: /templates/velocity.toml.j2
-        subPath: velocity.toml.j2
       - name: datadir
         mountPath: /server
-      - name: common-secrets
-        mountPath: /secrets
-        readOnly: true
+      - name: config
+        mountPath: /conf/velocity.toml
+        subPath: velocity.toml

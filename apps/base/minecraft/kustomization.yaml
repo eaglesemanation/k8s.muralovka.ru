@@ -14,13 +14,6 @@ configMapGenerator:
     files:
       - values.yaml=proxy-values.yaml
 
-  - name: proxy-config-templates
-    namespace: minecraft
-    options:
-      disableNameSuffixHash: true
-    files:
-      - proxy-config/velocity.toml.j2
-
   - name: proxy-config
     namespace: minecraft
     options:
@@ -28,18 +21,20 @@ configMapGenerator:
     files:
       - proxy-config/geyser-config.yaml
       - proxy-config/skinrestorer.yaml
+      - proxy-config/velocity.toml
 
   - name: lobby-values
     namespace: flux-system
     files:
       - values.yaml=lobby-values.yaml
 
-  - name: lobby-config-templates
+  - name: lobby-config
     namespace: minecraft
     options:
       disableNameSuffixHash: true
     files:
-      - lobby-config/paper.yml.j2
+      - lobby-config/paper.yml
+      - lobby-config/spigot.yml
 
 secretGenerator:
   - name: common-secrets
@@ -47,7 +42,6 @@ secretGenerator:
     options:
       disableNameSuffixHash: true
     literals:
-      - velocity_secret=NotSoSecure
       - postgres_username=minecraft
       - postgres_password=minecraft
       - rcon_password=NotSoSecure

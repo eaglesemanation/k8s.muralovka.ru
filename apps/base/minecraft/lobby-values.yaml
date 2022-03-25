@@ -4,7 +4,7 @@ minecraftServer:
   type: PAPER
   overrideServerProperties: true
   onlineMode: false
-  gamemode: adventure
+  gameMode: adventure
   spigetResources:
     - 34315 # https://www.spigotmc.org/resources/vault.34315/
     - 28140 # https://www.spigotmc.org/resources/luckperms.28140/
@@ -41,17 +41,22 @@ resources:
     cpu: 500m
 
 securityContext:
-  fsGroup: 1001
+  runAsUser: 1000
+  fsGroup: 1000
 
 persistence:
   dataDir:
     enabled: true
 
 extraVolumes:
-  - volumes:
-      - name: config-templates
+  - volumeMounts:
+      - name: config
+        mountPath: /server/paper.yml
+        subPath: paper.yml
+    volumes:
+      - name: config
         configMap:
-          name: lobby-config-templates
+          name: lobby-config
       - name: common-secrets
         secret:
           secretName: common-secrets
@@ -69,6 +74,9 @@ initContainers:
         for pluginName in LuckPerms AuthMe; do
           mkdir -p /server/plugins/$pluginName
         done
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
       - name: datadir
         mountPath: /server
@@ -82,6 +90,9 @@ initContainers:
         "--output-document", "/server/plugins/AuthMe.jar",
         "https://github.com/AuthMe/AuthMeReloaded/releases/download/5.6.0-beta2/AuthMe-5.6.0-beta2.jar",
       ]
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
       - name: datadir
         mountPath: /server
@@ -95,26 +106,25 @@ initContainers:
         "--output-document", "/server/plugins/Advanced-Portals.jar",
         "https://dev.bukkit.org/projects/advanced-portals/files/latest",
       ]
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
       - name: datadir
         mountPath: /server
 
-  - name: render-paper-config
-    image: objectiflibre/jinja-init
-    env:
-      - name: JINJA_SRC_FILE
-        value: /templates/paper.yml.j2
-      - name: JINJA_DEST_FILE
-        value: /server/paper.yml
+  - name: cp-spigot-config
+    image: busybox
+    command: ['sh', '-c', 'cp /config/spigot.yml /server/spigot.yml']
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
-      - name: config-templates
-        mountPath: /templates/paper.yml.j2
-        subPath: paper.yml.j2
       - name: datadir
         mountPath: /server
-      - name: common-secrets
-        mountPath: /secrets
-        readOnly: true
+      - name: config
+        mountPath: /config/spigot.yml
+        subPath: spigot.yml
 
   - name: render-luckperms-config
     image: objectiflibre/jinja-init
@@ -123,6 +133,9 @@ initContainers:
         value: /templates/luckperms.yml.j2
       - name: JINJA_DEST_FILE
         value: /server/plugins/LuckPerms/config.yml
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
       - name: plugin-config-templates
         mountPath: /templates/luckperms.yml.j2
@@ -140,6 +153,9 @@ initContainers:
         value: /templates/authme.yml.j2
       - name: JINJA_DEST_FILE
         value: /server/plugins/AuthMe/config.yml
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
     volumeMounts:
       - name: plugin-config-templates
         mountPath: /templates/authme.yml.j2

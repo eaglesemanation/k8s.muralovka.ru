@@ -6,6 +6,8 @@ metadata:
 spec:
   releaseName: lobby
   targetNamespace: minecraft
+  dependsOn:
+    - name: minecraft-postgres
   chart:
     spec:
       chart: minecraft

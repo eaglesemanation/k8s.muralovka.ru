@@ -42,13 +42,13 @@ settings:
   region-file-cache-size: 256
   enable-player-collisions: true
   save-empty-scoreboard-teams: false
-  bungee-online-mode: true
+  bungee-online-mode: false
   incoming-packet-spam-threshold: 300
   use-alternative-luck-formula: false
   velocity-support:
-    enabled: true
+    enabled: false
     online-mode: false
-    secret: "{{ velocity_secret }}"
+    secret: ""
   console-has-all-permissions: false
   player-auto-save-rate: -1
   max-player-auto-save-per-tick: -1
