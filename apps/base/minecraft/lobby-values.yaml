@@ -126,40 +126,20 @@ initContainers:
         mountPath: /config/spigot.yml
         subPath: spigot.yml
 
-  - name: render-luckperms-config
-    image: objectiflibre/jinja-init
-    env:
-      - name: JINJA_SRC_FILE
-        value: /templates/luckperms.yml.j2
-      - name: JINJA_DEST_FILE
-        value: /server/plugins/LuckPerms/config.yml
+  - name: render-template-configs
+    image: hairyhenderson/gomplate
+    args: [
+      '-d', 'secrets=/secrets/',
+      '--file', '/templates/luckperms.yml.tmpl',
+      '--out', '/server/plugins/LuckPerms/config.yml',
+      '--file', '/templates/authme.yml.tmpl',
+      '--out', '/server/plugins/AuthMe/config.yml']
     securityContext:
       runAsUser: 1000
       runAsGroup: 1000
     volumeMounts:
       - name: plugin-config-templates
-        mountPath: /templates/luckperms.yml.j2
-        subPath: luckperms.yml.j2
-      - name: datadir
-        mountPath: /server
-      - name: common-secrets
-        mountPath: /secrets
-        readOnly: true
-
-  - name: render-authme-config
-    image: objectiflibre/jinja-init
-    env:
-      - name: JINJA_SRC_FILE
-        value: /templates/authme.yml.j2
-      - name: JINJA_DEST_FILE
-        value: /server/plugins/AuthMe/config.yml
-    securityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-    volumeMounts:
-      - name: plugin-config-templates
-        mountPath: /templates/authme.yml.j2
-        subPath: authme.yml.j2
+        mountPath: /templates/
       - name: datadir
         mountPath: /server
       - name: common-secrets

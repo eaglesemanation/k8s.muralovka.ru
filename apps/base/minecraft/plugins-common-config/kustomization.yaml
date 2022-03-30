@@ -7,5 +7,5 @@ configMapGenerator:
     options:
       disableNameSuffixHash: true
     files:
-      - authme.yml.j2
-      - luckperms.yml.j2
+      - authme.yml.tmpl
+      - luckperms.yml.tmpl
