@@ -42,12 +42,6 @@ secretGenerator:
     options:
       disableNameSuffixHash: true
     literals:
-      - postgres_username=minecraft
-      - postgres_password=minecraft
-      - rcon_password=NotSoSecure
-  
-  - name: minecraft-postgres-creds
-    namespace: flux-system
-    literals:
-      - username=minecraft
-      - password=minecraft
+      - postgres-username=postgres
+      - postgres-password=minecraft
+      - rcon-password=NotSoSecure

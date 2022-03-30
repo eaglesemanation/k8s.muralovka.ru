@@ -19,7 +19,7 @@ minecraftServer:
   rcon:
     enabled: true
     existingSecret: common-secrets
-    secretKey: rcon_password
+    secretKey: rcon-password
   # https://docs.papermc.io/paper/aikars-flags
   jvmXXOpts: |-
     -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200

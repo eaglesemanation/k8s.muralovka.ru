@@ -23,12 +23,4 @@ spec:
   values:
     auth:
       database: minecraft
-  valuesFrom:
-    - kind: Secret
-      name: minecraft-postgres-creds
-      valuesKey: username
-      targetPath: auth.username
-    - kind: Secret
-      name: minecraft-postgres-creds
-      valuesKey: password
-      targetPath: auth.password
+      existingSecret: common-secrets
