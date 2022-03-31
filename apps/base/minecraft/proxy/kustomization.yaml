@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - release.yaml
+
+configMapGenerator:
+  - name: config-proxy
+    namespace: minecraft
+    options:
+      disableNameSuffixHash: true
+    files:
+      - geyser-config.yaml
+      - skinrestorer.yaml
+      - velocity.toml
+

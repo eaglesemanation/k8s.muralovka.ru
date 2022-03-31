@@ -4,37 +4,8 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - postgres-release.yaml
-  - proxy-release.yaml
-  - lobby-release.yaml
-  - plugins-common-config
-
-configMapGenerator:
-  - name: proxy-values
-    namespace: flux-system
-    files:
-      - values.yaml=proxy-values.yaml
-
-  - name: proxy-config
-    namespace: minecraft
-    options:
-      disableNameSuffixHash: true
-    files:
-      - proxy-config/geyser-config.yaml
-      - proxy-config/skinrestorer.yaml
-      - proxy-config/velocity.toml
-
-  - name: lobby-values
-    namespace: flux-system
-    files:
-      - values.yaml=lobby-values.yaml
-
-  - name: lobby-config
-    namespace: minecraft
-    options:
-      disableNameSuffixHash: true
-    files:
-      - lobby-config/paper.yml
-      - lobby-config/spigot.yml
+  - proxy
+  - lobby
 
 secretGenerator:
   - name: common-secrets
