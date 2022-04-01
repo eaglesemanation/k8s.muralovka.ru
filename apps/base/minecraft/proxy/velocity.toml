@@ -12,6 +12,7 @@ ping-passthrough = "DISABLED"
 
 [servers]
 lobby = "lobby-minecraft.minecraft.svc.cluster.local:25565"
+survival = "survival-minecraft.minecraft.svc.cluster.local:25565"
 try = [
   "lobby"
 ]

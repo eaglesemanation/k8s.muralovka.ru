@@ -6,6 +6,16 @@ resources:
   - postgres-release.yaml
   - proxy
   - lobby
+  - survival
+
+configMapGenerator:
+  - name: plugin-config-templates
+    namespace: minecraft
+    options:
+      disableNameSuffixHash: true
+    files:
+      - ./components/plugins/authme.yml.tmpl
+      - ./components/plugins/luckperms.yml.tmpl
 
 secretGenerator:
   - name: common-secrets
